@@ -212,6 +212,7 @@ All pipeline logic, thresholds, entity classification rules, Cypher queries, and
 
 ---
 
+
 ## Demo video
 
-Link: [to be added before submission]
+> **Link: [Watch Demo Video](https://1drv.ms/f/c/d61b7c5cd4d0b7fb/IgABSjSwlw0oQ4NJ8CmuwyQmAe5auFsITN1GOsfuNIVoTog?e=2HfKNJ)**
