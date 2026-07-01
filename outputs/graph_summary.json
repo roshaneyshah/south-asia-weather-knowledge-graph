@@ -1,0 +1,31 @@
+{
+  "total_nodes": 21929,
+  "total_relationships": 30119,
+  "countries_covered": 5,
+  "cities_covered": 28,
+  "date_range": "2022-01-01 to 2023-12-31",
+  "node_type_counts": {
+    "Country": 5,
+    "Location": 28,
+    "RainfallEvent": 6624,
+    "FloodEvent": 18,
+    "HeatwaveEvent": 4331,
+    "TemperatureEvent": 4331,
+    "WindEvent": 5750,
+    "DroughtEvent": 56,
+    "ClimateIndicator": 56,
+    "Date": 730
+  },
+  "relationship_counts": {
+    "OCCURRED_IN": 12430,
+    "LOCATED_IN": 28,
+    "AFFECTED": 74,
+    "CAUSED": 4349,
+    "ON_DATE": 12374,
+    "HAS_INDICATOR": 56,
+    "ASSOCIATED_WITH": 56,
+    "UPSTREAM_OF": 90,
+    "PRECEDED": 331,
+    "FOLLOWED": 331
+  }
+}
