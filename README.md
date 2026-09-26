@@ -1,19 +1,15 @@
-# PCN-Internship-2026 — Task 2: Weather Intelligence Knowledge Graph
+# Weather Intelligence Knowledge Graph
 
-**Candidate:** Roshane Shahbaz
-**Lab:** Parallel Computing and Networks (PCN) Research Lab, FAST-NUCES
-**Task selected:** Task 2 — Weather Intelligence Knowledge Graph
-
----
+An end-to-end pipeline that turns historical weather data for Pakistan and its neighbouring countries into a Neo4j knowledge graph of typed climate events, and uses it to answer analytical questions about rainfall, extremes, co-occurring patterns, vulnerability and cross-border signals.
 
 ## Overview
 
-This project builds an end-to-end pipeline that:
+The pipeline:
 
-1. Collects weather data from the Open-Meteo API for Pakistan and its four neighbouring countries (India, Afghanistan, Iran, China)
-2. Classifies weather records into typed events: rainfall, temperature, heatwave, flood, wind, drought
-3. Constructs a Neo4j knowledge graph linking locations, countries, events, dates, and climate indicators
-4. Answers all six required analytical queries via Cypher
+- Collects weather data from the Open-Meteo API for Pakistan and its four neighbouring countries (India, Afghanistan, Iran, China)
+- Classifies weather records into typed events: rainfall, temperature, heatwave, flood, wind, drought
+- Constructs a Neo4j knowledge graph linking locations, countries, events, dates, and climate indicators
+- Answers six analytical queries via Cypher
 
 **Graph statistics (2022-2023, 28 cities, 5 countries):**
 
@@ -25,24 +21,22 @@ This project builds an end-to-end pipeline that:
 | Cities | 28 |
 | Date range | 2022-01-01 to 2023-12-31 |
 
----
-
 ## Repository Structure
 
 ```
-PCN-Internship-Task-2/
+south-asia-weather-knowledge-graph/
 ├── README.md
-├── main.py                        
+├── main.py
 ├── requirements.txt
 ├── src/
-│   ├── collect_weather.py         
-│   ├── generate_synthetic.py      
-│   ├── extract_entities.py        
-│   ├── build_graph.py             
-│   ├── analytics.py               
-│   └── export_schema.py           
+│   ├── collect_weather.py
+│   ├── generate_synthetic.py
+│   ├── extract_entities.py
+│   ├── build_graph.py
+│   ├── analytics.py
+│   └── export_schema.py
 ├── data/
-│   └── weather_raw.csv            
+│   └── weather_raw.csv
 ├── outputs/
 │   ├── rainfall_events.csv
 │   ├── temperature_events.csv
@@ -50,15 +44,13 @@ PCN-Internship-Task-2/
 │   ├── drought_events.csv
 │   ├── climate_indicators.csv
 │   ├── graph_summary.json
-│   ├── graph_schema.cypher        
-│   └── analytical_results.json    
+│   ├── graph_schema.cypher
+│   └── analytical_results.json
 ├── report/
 │   └── technical_report.md
 └── demo_video/
-    └── README.md                  
+    └── README.md
 ```
-
----
 
 ## Setup
 
@@ -76,13 +68,9 @@ pip install -r requirements.txt
 
 ### Start Neo4j
 
-**Option A — Local:**
-Download from [neo4j.com/download](https://neo4j.com/download/), start Neo4j Desktop, create a database, and note the bolt URI, username, and password.
+**Option A, local:** Download from neo4j.com/download, start Neo4j Desktop, create a database, and note the bolt URI, username, and password.
 
-**Option B — AuraDB (free cloud):**
-Create a free instance at [console.neo4j.io](https://console.neo4j.io) and copy the connection string.
-
----
+**Option B, AuraDB (free cloud):** Create a free instance at console.neo4j.io and copy the connection string.
 
 ## Running the pipeline
 
@@ -123,9 +111,7 @@ python src/analytics.py bolt://localhost:7687 neo4j <password>
 python src/export_schema.py
 ```
 
----
-
-## Offline / no-network mode
+### Offline / no-network mode
 
 If the Open-Meteo API is unreachable, `collect_weather.py` automatically calls `generate_synthetic.py`, which produces data in the exact same schema as the API. All downstream steps run identically.
 
@@ -134,8 +120,6 @@ python src/generate_synthetic.py
 python src/extract_entities.py
 python src/build_graph.py bolt://localhost:7687 neo4j <password>
 ```
-
----
 
 ## Data sources
 
@@ -149,45 +133,41 @@ python src/build_graph.py bolt://localhost:7687 neo4j <password>
 
 Variables collected: `temperature_2m_max`, `temperature_2m_min`, `temperature_2m_mean`, `precipitation_sum`, `windspeed_10m_max`, `winddirection_10m_dominant`, `weathercode`, `et0_fao_evapotranspiration`
 
----
-
 ## Knowledge graph schema
 
 ### Node types
 
 | Label | Description |
 |---|---|
-| `Country` | One of five countries |
-| `Location` | City with lat/lon and district |
-| `Date` | Calendar date (YYYY-MM-DD) |
-| `RainfallEvent` | Daily precipitation record |
-| `FloodEvent` | Derived when rainfall >= 50 mm/day |
-| `HeatwaveEvent` | Day exceeding country-specific threshold |
-| `TemperatureEvent` | All heatwave temperature records |
-| `WindEvent` | Days with wind > 20 km/h |
-| `DroughtEvent` | Consecutive dry streak >= 30 days |
-| `ClimateIndicator` | Annual aggregate per city |
+| Country | One of five countries |
+| Location | City with lat/lon and district |
+| Date | Calendar date (YYYY-MM-DD) |
+| RainfallEvent | Daily precipitation record |
+| FloodEvent | Derived when rainfall >= 50 mm/day |
+| HeatwaveEvent | Day exceeding country-specific threshold |
+| TemperatureEvent | All heatwave temperature records |
+| WindEvent | Days with wind > 20 km/h |
+| DroughtEvent | Consecutive dry streak >= 30 days |
+| ClimateIndicator | Annual aggregate per city |
 
 ### Relationship types
 
 | Type | Meaning |
 |---|---|
-| `LOCATED_IN` | Location -> Country |
-| `OCCURRED_IN` | Event -> Location |
-| `AFFECTED` | Event -> Location (harm-focused) |
-| `CAUSED` | Rainfall -> FloodEvent; Temperature -> HeatwaveEvent |
-| `ON_DATE` | Event -> Date |
-| `HAS_INDICATOR` | Location -> ClimateIndicator |
-| `ASSOCIATED_WITH` | Co-occurring events on same date and location |
-| `UPSTREAM_OF` | Cross-border signal: neighbour event precedes Pakistan event |
-| `PRECEDED` | Sequential heavy rainfall events within 3 days |
-| `FOLLOWED` | Inverse of PRECEDED |
+| LOCATED_IN | Location -> Country |
+| OCCURRED_IN | Event -> Location |
+| AFFECTED | Event -> Location (harm-focused) |
+| CAUSED | Rainfall -> FloodEvent; Temperature -> HeatwaveEvent |
+| ON_DATE | Event -> Date |
+| HAS_INDICATOR | Location -> ClimateIndicator |
+| ASSOCIATED_WITH | Co-occurring events on same date and location |
+| UPSTREAM_OF | Cross-border signal: neighbour event precedes Pakistan event |
+| PRECEDED | Sequential heavy rainfall events within 3 days |
+| FOLLOWED | Inverse of PRECEDED |
 
----
+## Analytical queries
 
-## Analytical queries answered
-
-All six required queries are implemented in `src/analytics.py` and results saved to `outputs/analytical_results.json`.
+All six queries are implemented in `src/analytics.py`, with results saved to `outputs/analytical_results.json`.
 
 | # | Query |
 |---|---|
@@ -198,8 +178,6 @@ All six required queries are implemented in `src/analytics.py` and results saved
 | Q5 | Most vulnerable districts |
 | Q6 | Upstream cross-border rainfall signals and typical lag |
 
----
-
 ## LLM usage disclosure
 
 Claude (Anthropic) was used to assist with:
@@ -208,11 +186,8 @@ Claude (Anthropic) was used to assist with:
 - Drafting the WMO weather code mapping table
 - Suggesting upstream city-pair lag values based on known regional meteorology
 
-All pipeline logic, thresholds, entity classification rules, Cypher queries, and graph schema design were reviewed, tested, and modified by the candidate before inclusion.
-
----
-
+All pipeline logic, thresholds, entity classification rules, Cypher queries, and graph schema design were reviewed, tested, and modified by the author before inclusion.
 
 ## Demo video
 
-> **Link: [Watch Demo Video](https://1drv.ms/f/c/d61b7c5cd4d0b7fb/IgABSjSwlw0oQ4NJ8CmuwyQmAe5auFsITN1GOsfuNIVoTog?e=2HfKNJ)**
+- [Watch Demo Video](PASTE_YOUR_VIDEO_LINK_HERE)
